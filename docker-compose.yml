@@ -21,7 +21,9 @@ services:
         build:
             context: ./python-3-14
             dockerfile: Dockerfile
+        environment:
+            - GEMINI_API_KEY=${GEMINI_API_KEY}
         volumes:
             - ./../armchair-ai-back:/app
             - ./run:/tmp/run
-        command: uvicorn app.main:app --uds /tmp/run/uvicorn.sock --reload
+        command: sh -c "uvicorn app.main:app --uds /tmp/run/uvicorn.sock --reload 2>&1 | tee /app/uvicorn.log"
