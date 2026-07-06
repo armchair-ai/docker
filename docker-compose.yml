@@ -26,4 +26,5 @@ services:
         volumes:
             - ./../armchair-ai-back:/app
             - ./run:/tmp/run
+            - ./.gemini:/root/.gemini
         command: sh -c "uvicorn app.main:app --uds /tmp/run/uvicorn.sock --reload 2>&1 | tee /app/uvicorn.log"
