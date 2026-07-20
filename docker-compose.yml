@@ -16,6 +16,7 @@ services:
     python:
         image: aa-python-3-14
         container_name: aa-python
+        user: "1000:1000"
         restart: always
         working_dir: /app
         build:
@@ -23,8 +24,9 @@ services:
             dockerfile: Dockerfile
         environment:
             - GEMINI_API_KEY=${GEMINI_API_KEY}
+            - HOME=/tmp
         volumes:
             - ./../armchair-ai-back:/app
             - ./run:/tmp/run
-            - ./.gemini:/root/.gemini
+            - ./.gemini:/tmp/.gemini
         command: sh -c "uvicorn app.main:app --uds /tmp/run/uvicorn.sock --reload 2>&1 | tee /app/uvicorn.log"
