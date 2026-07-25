@@ -26,7 +26,18 @@ services:
             - GEMINI_API_KEY=${GEMINI_API_KEY}
             - HOME=/tmp
         volumes:
-            - ./../armchair-ai-back:/app
+            - ./../back:/app
             - ./run:/tmp/run
             - ./.gemini:/tmp/.gemini
         command: sh -c "uvicorn app.main:app --uds /tmp/run/uvicorn.sock --reload 2>&1 | tee /app/uvicorn.log"
+
+    db:
+        image: postgres:18.4-alpine
+        container_name: aa-db
+        restart: always
+        ports: 
+            - 5432:5432
+        environment:
+            POSTGRES_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+        volumes:
+            - ./../databases:/var/lib/postgresql
