@@ -10,4 +10,5 @@ RUN python -m venv /opt/venv && \
     sqlalchemy \
     asyncpg \
     alembic \
-    pydantic-settings
+    pydantic-settings \
+    redis
