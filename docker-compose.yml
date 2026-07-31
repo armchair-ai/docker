@@ -16,7 +16,7 @@ services:
     python:
         image: aa-python-3-14
         container_name: aa-python
-        user: "1000:1000"
+        user: "${UID:-1000}:${GID:-1000}"
         restart: always
         working_dir: /app
         build:
