@@ -13,6 +13,7 @@ docker run -it --rm \
     export PATH=/tmp/.npm-global/bin:$PATH &&
     export NG_CLI_ANALYTICS=false &&
     npm install -g @angular/cli@22.1.6 &&
-    ng new front --defaults --skip-git --skip-tests --directory=.
+    ng new front --style=scss --defaults --skip-git --skip-tests --directory=. &&
+    ng add @angular/material --skip-confirmation --defaults
   '
 ```

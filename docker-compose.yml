@@ -50,6 +50,21 @@ services:
         volumes:
             - ./../databases:/var/lib/postgresql
 
+    angular:
+        image: angular:22.1.6
+        container_name: aa-angular
+        restart: always
+        working_dir: /srv
+        build:
+            context: ./angular-22-1-6
+            dockerfile: Dockerfile
+        volumes:
+            - ./../front:/srv
+        user: "${UID:-1000}:${GID:-1000}"
+        command: ng serve --host 0.0.0.0 --port 4200
+        ports: 
+            - 4200:4200
+
     redis:
         image: redis:7.4-alpine
         container_name: aa-redis
