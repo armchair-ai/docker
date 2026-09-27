@@ -26,3 +26,9 @@ docker run --rm --interactive --tty \
     --user $(id -u):$(id -g) \
     composer:2.10.3 create-project laravel/laravel:^13.0 skeleton-laravel-back
 ```
+
+## Create database
+
+```sh
+docker exec -it aa-db psql -U postgres -c "CREATE DATABASE <nombre_bd>;"
+```
