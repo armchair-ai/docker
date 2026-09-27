@@ -34,10 +34,27 @@ services:
             - REDIS_PORT=${REDIS_PORT:-6379}
         volumes:
             - ./../back:/app
+            - ./../skeleton-laravel-back:/workspace/skeleton-laravel-back
+            - /var/run/docker.sock:/var/run/docker.sock 
             - ./run:/tmp/run
             - ./.gemini:/tmp/.gemini
         command: sh -c "uvicorn app.main:app --uds /tmp/run/uvicorn.sock --reload 2>&1 | tee /app/uvicorn.log"
 
+    php:
+        image: aa-php-8-4
+        container_name: aa-php
+        restart: always
+        user: "${UID:-1000}:${GID:-1000}"
+        environment:
+            - HOME=/tmp
+        build:
+            context: ./php-8-4
+            dockerfile: Dockerfile
+        working_dir: /var/www
+        volumes:
+            - ./../skeleton-laravel-back:/var/www
+            - ./php-config/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    
     db:
         image: postgres:18.4-alpine
         container_name: aa-db
