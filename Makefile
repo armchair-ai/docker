@@ -1,6 +1,6 @@
 SHELL = /bin/sh
 
-.PHONY: start stop in-py log-py log-worker migrate
+.PHONY: start stop in-py log-py log-worker migrate seed
 
 start:
 	@docker-compose -f ./docker-compose.yml -p aa up -d
@@ -19,6 +19,9 @@ log-worker:
 
 migrate:
 	@docker exec aa-python alembic upgrade head
+
+seed:
+	@docker exec aa-python python -m database.seeds.run
 
 monitor:
 	@docker exec -it aa-redis redis-cli LRANGE queue:default 0 -1
