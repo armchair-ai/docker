@@ -1,17 +1,17 @@
 services:
 
     nginx:
-            image: nginx:1.31.2-alpine
-            container_name: aa-nginx
-            restart: always
-            ports:
-                - 80:80
-            volumes:
-                - ./..:/var/www
-                - ./sites-enabled:/etc/nginx/conf.d
-                - ./run:/tmp/run
-            networks:
-                - default
+        image: nginx:1.31.2-alpine
+        container_name: aa-nginx
+        restart: always
+        ports:
+            - 80:80
+        volumes:
+            - ./..:/var/www
+            - ./sites-enabled:/etc/nginx/conf.d
+            - ./run:/tmp/run
+        networks:
+            - default
 
     python:
         image: aa-python-3-14
@@ -39,6 +39,29 @@ services:
             - ./run:/tmp/run
             - ./.gemini:/tmp/.gemini
         command: sh -c "uvicorn app.main:app --uds /tmp/run/uvicorn.sock --reload 2>&1 | tee /app/uvicorn.log"
+
+    worker:
+        image: aa-python-3-14
+        container_name: aa-worker
+        user: "${UID:-1000}:${GID:-1000}"
+        restart: always
+        working_dir: /app
+        environment:
+            - GEMINI_API_KEY=${GEMINI_API_KEY}
+            - HOME=/tmp
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - POSTGRES_DB=${DB_DATABASE}
+            - POSTGRES_HOST=${POSTGRES_HOST}
+            - POSTGRES_PORT=${POSTGRES_PORT}
+            - REDIS_HOST=${REDIS_HOST:-redis}
+            - REDIS_PORT=${REDIS_PORT:-6379}
+        volumes:
+            - ./../back:/app
+            - ./../skeleton-laravel-back:/workspace/skeleton-laravel-back
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./.gemini:/tmp/.gemini
+        command: python -m app.worker
 
     php:
         image: aa-php-8-4
